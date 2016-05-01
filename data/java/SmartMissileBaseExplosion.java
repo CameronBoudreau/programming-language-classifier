@@ -1,2 +1,0 @@
-class SmartMissileBaseExplosion extends MissileBaseExplosion {
-}
