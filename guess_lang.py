@@ -84,15 +84,21 @@ failed_on = []
 
 for i in both:
     correct = 'WRONG'
+    # if i[0][1] == 'tcl':
+    #     break
     if i[0][1] == i[1]:
         correct = 'CORRECT'
         count += 1
+        print('Test {}: Expected: {}; Predicted: {}; {}'.format(i[0][0],
+                                                                i[0][1], i[1],
+                                                                correct))
     else:
         if i[0][1] != 'tcl':
             failed_on.append(i[0][1])
-    print('Test {}: Expected: {}; Predicted: {}; {}'.format(i[0][0],
-                                                            i[0][1], i[1],
-                                                            correct))
+            print('Test {}: Expected: {}; Predicted: {}; {}'.format(i[0][0],
+                                                                    i[0][1],
+                                                                    i[1],
+                                                                    correct))
 
-print('Percent correct (does not include tcl tests): {}'.format(count/30))
+print('Percent correct: %{}'.format(count/30*100))
 print('Failed on: ', failed_on)
