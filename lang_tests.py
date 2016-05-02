@@ -1,7 +1,7 @@
 from guess_lang.py import *
 
 
-def test_classifer():
+def test_get_lang():
     assert get_lang('test/1') == 'clojure'
     # assert get_lang('test/2') == 'clojure'
     # assert get_lang('test/3') == 'clojure'

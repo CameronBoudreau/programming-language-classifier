@@ -1,38 +1,23 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import SGDClassifier
 from sklearn.datasets import load_files
-from sklearn.cross_validation import train_test_split
-import random
 import glob
 
 dataset = load_files('data', encoding='UTF-8', decode_error='replace')
 
-seed = random.randint(1, 1000)
-X_train, X_test, y_train, y_test = train_test_split(dataset.data,
-                                                    dataset.target,
-                                                    test_size=0.2,
-                                                    random_state=seed)
-
-vec = CountVectorizer(ngram_range=(1, 3))
-X_train_counts = vec.fit_transform(X_train)
+vec = CountVectorizer(ngram_range=(1, 2))
+X_train_counts = vec.fit_transform(dataset.data)
 
 tf_transformer = TfidfTransformer()
 X_train_tfidf = tf_transformer.fit_transform(X_train_counts)
 
-clf = MultinomialNB().fit(X_train_tfidf, y_train)
+sgd = SGDClassifier(alpha=1e-3, random_state=42).fit(X_train_tfidf,
+                                                     dataset.target)
 
-print("Seed: {}\nTrain classifier Score: {}".format(seed,
-                                                    clf.score(X_train_tfidf,
-                                                              y_train)))
+print("Train classifier Score: {}".format(sgd.score(X_train_tfidf,
+                                          dataset.target)))
 
-X_test_counts = vec.transform(X_test)
-X_test_tfidf = tf_transformer.transform(X_test_counts)
-
-
-print("Seed: {}\nTest classifier Score: {}".format(seed,
-                                                   clf.score(X_test_tfidf,
-                                                             y_test)))
 
 def get_file(code):
     f = open(code)
@@ -48,7 +33,7 @@ def get_lang(code_file):
     X_new_counts = vec.transform(test_doc)
     X_new_tfidf = tf_transformer.transform(X_new_counts)
 
-    predicted = dataset.target_names[clf.predict(X_new_tfidf)[0]]
+    predicted = dataset.target_names[sgd.predict(X_new_tfidf)[0]]
 
     return predicted
 
@@ -109,5 +94,5 @@ for i in both:
                                                             i[0][1], i[1],
                                                             correct))
 
-print('Percent correct: {}'.format(count/32))
+print('Percent correct (does not include tcl tests): {}'.format(count/30))
 print('Failed on: ', failed_on)
